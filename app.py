@@ -4,6 +4,9 @@ import os
 import sys
 
 app = Flask(__name__)
+@app.route('/')
+def home():
+    return render_template('index.html')
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "database", "care.db")
