@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Personal Care Product Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>🧴 Personal Care Product Analyzer</h1>
+        <p class="subtitle">Type in the ingredients printed on a personal care product. Everything runs locally — no internet or API required.</p>
+
+        <form action="/analyze" method="POST">
+            <label for="product_name">Product Name (optional)</label>
+            <input type="text" id="product_name" name="product_name" placeholder="e.g. Daily Face Wash">
+
+            <label for="skin_type">Skin Type</label>
+            <select id="skin_type" name="skin_type">
+                <option value="">Not specified</option>
+                <option value="Normal">Normal</option>
+                <option value="Oily">Oily</option>
+                <option value="Dry">Dry</option>
+                <option value="Sensitive">Sensitive</option>
+            </select>
+
+            <label for="ingredients">Ingredients List</label>
+            <textarea id="ingredients" name="ingredients" placeholder="e.g. water, glycerin, sodium lauryl sulfate, parfum, methylparaben"></textarea>
+            <div class="hint">Separate ingredients with commas — or search/click below to add a known one instantly.</div>
+
+            <div class="search-row">
+                <input type="text" id="ingredient_search" list="ingredient_options" placeholder="Type to search (e.g. 'para' for Parabens)...">
+                <button type="button" onclick="addFromSearch()">Add</button>
+            </div>
+            <datalist id="ingredient_options">
+                {% for name in ingredient_names %}
+                <option value="{{ name }}">
+                {% endfor %}
+            </datalist>
+
+            <div class="chip-list">
+                {% for name in ingredient_names %}
+                <button type="button" class="chip" onclick="addIngredient('{{ name }}')">+ {{ name }}</button>
+                {% endfor %}
+            </div>
+
+            <button type="submit">Analyze Product</button>
+        </form>
+    </div>
+
+    <script>
+        function addIngredient(name) {
+            const box = document.getElementById('ingredients');
+            const current = box.value.trim();
+            if (current === '') {
+                box.value = name;
+            } else if (!current.toLowerCase().includes(name.toLowerCase())) {
+                box.value = current + ', ' + name;
+            }
+        }
+        function addFromSearch() {
+            const search = document.getElementById('ingredient_search');
+            const value = search.value.trim();
+            if (value !== '') {
+                addIngredient(value);
+                search.value = '';
+            }
+        }
+    </script>
+</body>
+</html>
